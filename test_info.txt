@@ -1,0 +1,1 @@
+Create a system that can ask an API for a json response, tweak this response based on configurations, and then serve its own API for the tweaked response

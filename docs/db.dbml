@@ -1,0 +1,104 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+
+Table ApiConfiguration {
+    id INTEGER [primary key]
+    name VARCHAR(100) 
+    base_url VARCHAR(255) 
+    endpoint VARCHAR(255) 
+    method VARCHAR(10) 
+    headers TEXT 
+    }
+
+Table ApiErrorLog {
+    id INTEGER [primary key]
+    timestamp DATETIME 
+    config_id INTEGER 
+    error_message TEXT 
+    }
+
+Table ApiLog {
+    id INTEGER [primary key]
+    timestamp DATETIME 
+    config_id INTEGER 
+    request_info TEXT 
+    response_info TEXT 
+    status VARCHAR(50) 
+    }
+
+Table ApiParameter {
+    id INTEGER [primary key]
+    config_id INTEGER 
+    param_key VARCHAR(100) 
+    param_value VARCHAR(255) 
+    }
+
+Table ApiResponse {
+    id INTEGER [primary key]
+    config_id INTEGER 
+    timestamp DATETIME 
+    raw_response TEXT 
+    }
+
+Table ApiResponseCache {
+    id INTEGER [primary key]
+    config_id INTEGER 
+    hashed_response VARCHAR(255) 
+    cached_data TEXT 
+    }
+
+Table ApiUsageStatistic {
+    id INTEGER [primary key]
+    user_id INTEGER 
+    config_id INTEGER 
+    api_calls_made INTEGER 
+    data_transformed INTEGER 
+    }
+
+Table User {
+    id INTEGER [primary key]
+    username VARCHAR(50) 
+    email VARCHAR(100) 
+    is_active BOOLEAN 
+    }
+
+Table DataTransformationRule {
+    id INTEGER [primary key]
+    config_id INTEGER 
+    rule_description TEXT 
+    transformation_logic TEXT 
+    }
+
+Table ProcessedDatum {
+    id INTEGER [primary key]
+    response_id INTEGER 
+    transformed_data TEXT 
+    processed_timestamp DATETIME 
+    }
+
+Table TransformationTemplate {
+    id INTEGER [primary key]
+    name VARCHAR(100) 
+    template_content TEXT 
+    }
+
+Table UserApiConfiguration {
+    id INTEGER [primary key]
+    user_id INTEGER 
+    config_id INTEGER 
+    }
+
+
+
+// Relationships
+    Ref: ApiErrorLog.(config_id) < ApiConfiguration.(id)
+    Ref: ApiLog.(config_id) < ApiConfiguration.(id)
+    Ref: ApiParameter.(config_id) < ApiConfiguration.(id)
+    Ref: ApiResponse.(config_id) < ApiConfiguration.(id)
+    Ref: ApiResponseCache.(config_id) < ApiConfiguration.(id)
+    Ref: ApiUsageStatistic.(config_id) < ApiConfiguration.(id)
+    Ref: ApiUsageStatistic.(user_id) < User.(id)
+    Ref: DataTransformationRule.(config_id) < ApiConfiguration.(id)
+    Ref: ProcessedDatum.(response_id) < ApiResponse.(id)
+    Ref: UserApiConfiguration.(config_id) < ApiConfiguration.(id)
+    Ref: UserApiConfiguration.(user_id) < User.(id)

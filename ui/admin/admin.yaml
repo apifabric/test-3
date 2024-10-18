@@ -1,0 +1,354 @@
+about:
+  date: October 18, 2024 13:40:11
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 11
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  ApiConfiguration:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: base_url
+      required: true
+    - name: endpoint
+    - name: headers
+    - name: id
+    - name: method
+      required: true
+    description: Stores configurations for accessing different APIs.
+    info_list: Stores configurations for accessing different APIs.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - config_id
+      name: ApiErrorLogList
+      resource: ApiErrorLog
+    - direction: tomany
+      fks:
+      - config_id
+      name: ApiLogList
+      resource: ApiLog
+    - direction: tomany
+      fks:
+      - config_id
+      name: ApiParameterList
+      resource: ApiParameter
+    - direction: tomany
+      fks:
+      - config_id
+      name: ApiResponseList
+      resource: ApiResponse
+    - direction: tomany
+      fks:
+      - config_id
+      name: ApiResponseCacheList
+      resource: ApiResponseCache
+    - direction: tomany
+      fks:
+      - config_id
+      name: ApiUsageStatisticList
+      resource: ApiUsageStatistic
+    - direction: tomany
+      fks:
+      - config_id
+      name: DataTransformationRuleList
+      resource: DataTransformationRule
+    - direction: tomany
+      fks:
+      - config_id
+      name: UserApiConfigurationList
+      resource: UserApiConfiguration
+    type: ApiConfiguration
+    user_key: name
+  ApiErrorLog:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: config_id
+      required: true
+    - name: timestamp
+      required: true
+    - name: error_message
+      required: true
+    description: Logs errors during API requests or data transformations.
+    info_list: Logs errors during API requests or data transformations.
+    tab_groups:
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    type: ApiErrorLog
+    user_key: id
+  ApiLog:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: config_id
+    - name: timestamp
+      required: true
+    - name: request_info
+    - name: response_info
+    - name: status
+      required: true
+    description: Keeps a log of all API interactions and their statuses.
+    info_list: Keeps a log of all API interactions and their statuses.
+    tab_groups:
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    type: ApiLog
+    user_key: id
+  ApiParameter:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: config_id
+      required: true
+    - name: param_key
+      required: true
+    - name: param_value
+    description: Stores parameters for making API requests.
+    info_list: Stores parameters for making API requests.
+    tab_groups:
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    type: ApiParameter
+    user_key: id
+  ApiResponse:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: config_id
+      required: true
+    - name: timestamp
+      required: true
+    - name: raw_response
+      required: true
+    description: Stores raw JSON responses from API requests.
+    info_list: Stores raw JSON responses from API requests.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - response_id
+      name: ProcessedDatumList
+      resource: ProcessedDatum
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    type: ApiResponse
+    user_key: id
+  ApiResponseCache:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: config_id
+      required: true
+    - name: hashed_response
+      required: true
+    - name: cached_data
+      required: true
+    description: Cache for storing previously seen API responses to improve performance.
+    info_list: Cache for storing previously seen API responses to improve performance.
+    tab_groups:
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    type: ApiResponseCache
+    user_key: id
+  ApiUsageStatistic:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: config_id
+      required: true
+    - name: user_id
+      required: true
+    - name: api_calls_made
+      required: true
+    - name: data_transformed
+      required: true
+    description: Maintains statistics about API usage for analytics.
+    info_list: Maintains statistics about API usage for analytics.
+    tab_groups:
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    - direction: toone
+      fks:
+      - user_id
+      name: user
+      resource: User
+    type: ApiUsageStatistic
+    user_key: id
+  DataTransformationRule:
+    attributes:
+    - label: ' rule_description*'
+      name: rule_description
+      required: true
+      search: true
+      sort: true
+    - name: config_id
+      required: true
+    - name: transformation_logic
+      required: true
+    - name: id
+    description: Defines rules for transforming API responses.
+    info_list: Defines rules for transforming API responses.
+    tab_groups:
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    type: DataTransformationRule
+    user_key: rule_description
+  ProcessedDatum:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: response_id
+      required: true
+    - name: transformed_data
+      required: true
+    - name: processed_timestamp
+      required: true
+    description: Stores data processed and transformed from raw API responses.
+    info_list: Stores data processed and transformed from raw API responses.
+    tab_groups:
+    - direction: toone
+      fks:
+      - response_id
+      name: response
+      resource: ApiResponse
+    type: ProcessedDatum
+    user_key: id
+  TransformationTemplate:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: template_content
+      required: true
+    - name: id
+    description: Predefined templates for common data transformations.
+    info_list: Predefined templates for common data transformations.
+    type: TransformationTemplate
+    user_key: name
+  User:
+    attributes:
+    - label: ' username*'
+      name: username
+      required: true
+      search: true
+      sort: true
+    - name: email
+      required: true
+    - name: is_active
+      required: true
+    - name: id
+    description: Stores user information for tracking and permissions.
+    info_list: Stores user information for tracking and permissions.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - user_id
+      name: ApiUsageStatisticList
+      resource: ApiUsageStatistic
+    - direction: tomany
+      fks:
+      - user_id
+      name: UserApiConfigurationList
+      resource: UserApiConfiguration
+    type: User
+    user_key: username
+  UserApiConfiguration:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: config_id
+      required: true
+    - name: user_id
+      required: true
+    description: Links users to specific API configurations they have access to.
+    info_list: Links users to specific API configurations they have access to.
+    tab_groups:
+    - direction: toone
+      fks:
+      - config_id
+      name: config
+      resource: ApiConfiguration
+    - direction: toone
+      fks:
+      - user_id
+      name: user
+      resource: User
+    type: UserApiConfiguration
+    user_key: id
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'
